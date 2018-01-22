@@ -23,8 +23,10 @@ IOperand const * OperandFactory::createOperand(
   std::string const & value 
 ) const {
   switch(type) {
-    case eOperandType::Int8:
+    case Int8:
       return this->createInt8(value);
+    case Int16:
+      return this->createInt16(value);
     default:
       return NULL;
   }
@@ -33,5 +35,10 @@ IOperand const * OperandFactory::createOperand(
 
 IOperand const * OperandFactory::createInt8( std::string const & value ) const {
   IOperand * ret = new Operand<int8_t>(convertFromString<int8_t>(value));
+  return ret;
+}
+
+IOperand const * OperandFactory::createInt16( std::string const & value ) const {
+  IOperand * ret = new Operand<int16_t>(convertFromString<int16_t>(value));
   return ret;
 }

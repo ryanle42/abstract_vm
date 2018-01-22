@@ -10,11 +10,9 @@ T convertFromString(std::string const &str) {
 
   ss << str;
   ss >> value;
-
   if (ss.fail()) {
     throw OverflowException();
   }
-
   return value;
 };
 

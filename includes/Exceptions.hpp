@@ -23,4 +23,24 @@ public:
   
 };
 
+class InvalidIOperandException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "IOperand is invalid";
+  }
+  
+};
+
+class DivideByZeroException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "Invalid divide by zero operation";
+  }
+  
+};
+
 #endif

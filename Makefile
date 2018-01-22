@@ -1,4 +1,4 @@
-NAME = phonebook
+NAME = a_vm
 
 OBJS = $(addprefix ./srcs/, \
 					$(addsuffix .o, \
