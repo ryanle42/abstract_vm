@@ -54,6 +54,7 @@ public:
         throw InvalidIOperandException();
     }
   }
+
   IOperand const * operator-( IOperand const & rhs ) const {
     int precision = std::max(this->getPrecision(), rhs.getPrecision());
 
@@ -72,6 +73,7 @@ public:
         throw InvalidIOperandException();
     }
   }
+
   IOperand const * operator*( IOperand const & rhs ) const {
     int precision = std::max(this->getPrecision(), rhs.getPrecision());
 
@@ -90,6 +92,7 @@ public:
         throw InvalidIOperandException();
     }
   }
+
   IOperand const * operator/( IOperand const & rhs ) const {
     int precision = std::max(this->getPrecision(), rhs.getPrecision());
 
@@ -108,6 +111,7 @@ public:
         throw InvalidIOperandException();
     }
   }
+  
   IOperand const * operator%( IOperand const & rhs ) const {
     int precision = std::max(this->getPrecision(), rhs.getPrecision());
 
@@ -138,9 +142,13 @@ public:
 
   std::string const & toString( void ) const {
     std::stringstream ss;
-    std::string * str;
+    std::string *str;
 
-    ss << this->_value;
+    if (this->getType() == Int8) {
+      ss << static_cast<int16_t>(this->_value);
+    } else {
+      ss << this->_value;
+    }
     str = new std::string(ss.str());
     return *str;
   }
