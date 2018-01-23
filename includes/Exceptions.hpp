@@ -33,4 +33,14 @@ public:
   
 };
 
+class UnknownInstructionException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "Unknown Instruction";
+  }
+  
+};
+
 #endif

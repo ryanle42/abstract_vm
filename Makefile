@@ -3,6 +3,7 @@ NAME = a_vm
 OBJS = $(addprefix ./srcs/, \
 					$(addsuffix .o, \
 							OperandFactory \
+							VirtualMachine \
 							main \
 						) \
 				)
