@@ -23,33 +23,26 @@ VirtualMachine & VirtualMachine::operator=(
 }
 
 void VirtualMachine::addCommand( std::string line ) {
+  IOperand const * operand;
+  std::string cmd;
+  
   if (line[0] == ';') {
     return ;
   }
   this->_trimWhitespace(line);
-  this->_parseLine(line);
+  cmd = this->_getCommand(line);
+  if (cmd == "push" || cmd == "assert") {
+    operand = this->_getOperand(line);
+    this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, operand));
+  } else {
+    this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, NULL));
+  }
   return ;
 }
 
-void VirtualMachine::_parseLine( std::string line ) {
-  IOperand * value;
-  std::string cmd = this->_getCommand(line);
-
-  if (cmd == "push" || cmd == "assert") {
-    this->_removeSubstring(line, cmd + " ");
-    value = this->_getOperand(line);
-    this->_cmds.push_back(std::pair<std::string, IOperand *>(cmd, value));
-  } else {
-    this->_cmds.push_back(std::pair<std::string, IOperand *>(cmd, NULL));
-  }
-}
-
-std::string VirtualMachine::_getCommand( std::string line ) const {
+std::string VirtualMachine::_getCommand( std::string & line ) const {
   std::string cmd = "";
 
-  for (int i = 0; i < (int)line.length() && line[i] != ' '; i++) {
-    cmd += line[i];
-  }
   if (
     line == "pop" || 
     line == "dump" || 
@@ -62,7 +55,12 @@ std::string VirtualMachine::_getCommand( std::string line ) const {
     line == "exit"
   ) {
     return line;
-  } else if (cmd == "push") {
+  }
+  for (int i = 0; i < (int)line.length() && line[i] != ' '; i++) {
+    cmd += line[i];
+  }
+  this->_removeSubstring(line, cmd + " ");
+  if (cmd == "push") {
     return cmd;
   } else if (cmd == "assert") {
     return cmd;
@@ -106,7 +104,7 @@ void VirtualMachine::_validateFloat( std::string value ) const {
         value[i] == '.' && 
         decimal == 0 && 
         i != 0 && 
-        i != value.length() - 1 
+        i != (int)value.length() - 1 
       ) {
         decimal++;
       } else {
@@ -129,7 +127,7 @@ void VirtualMachine::_validateInt( std::string value ) const {
   return ;
 }
 
-eOperandType VirtualMachine::_getType( std::string line ) const {
+eOperandType VirtualMachine::_getType( std::string & line ) const {
   std::string type = "";
 
   for (int i = 0; i < (int)line.length(); i++) {
@@ -171,7 +169,7 @@ void VirtualMachine::printCommands( void ) const {
   for (unsigned int i = 0; i < this->_cmds.size(); i++) {
     std::cout << std::get<0>(this->_cmds[i]);
     if (std::get<1>(this->_cmds[i])) {
-      std::cout << " " << std::get<0>(this->_cmds[i]);
+      std::cout << " " << (std::get<1>(this->_cmds[i]))->toString();
     } else {
       std::cout << " NULL";
     }
