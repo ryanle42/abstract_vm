@@ -1,10 +1,12 @@
 #include "VirtualMachine.hpp"
-
 VirtualMachine::VirtualMachine( void ) {
   return ;
 }
-VirtualMachine::VirtualMachine( VirtualMachine const & src ) {
-  (void)src;
+
+VirtualMachine::VirtualMachine( VirtualMachine const & src ) :
+  _stack(src._stack),
+  _cmds(src._cmds)
+{
   return ;
 }
 
@@ -15,7 +17,8 @@ VirtualMachine::~VirtualMachine( void ) {
 VirtualMachine & VirtualMachine::operator=( 
   VirtualMachine const & rhs 
 ) {
-  (void)rhs;
+  this->_stack = rhs._stack;
+  this->_cmds = rhs._cmds;
   return *this;
 }
 
@@ -68,16 +71,100 @@ std::string VirtualMachine::_getCommand( std::string line ) const {
   }
 }
 
-IOperand * VirtualMachine::_getOperand( std::string line ) const {
-  // eOperandType type = this->_getType(line);
-  std::cout << line << std::endl;
-  return NULL;
+IOperand const * VirtualMachine::_getOperand( std::string line ) const {
+  OperandFactory factory;
+  
+  eOperandType type = this->_getType(line);
+  std::string value = this->_getValue(line);
+  
+  this->_validateValue(type, value);
+  return factory.createOperand(type, value);
+}
+
+void VirtualMachine::_validateValue( 
+  eOperandType type, 
+  std::string value 
+) const {
+
+  if (type == Double || type == Float) {
+    _validateInt(value);
+  } else {
+    _validateFloat(value);
+  }
+  return ;
+}
+
+void VirtualMachine::_validateFloat( std::string value ) const {
+  int decimal = 0;
+
+  for (int i = 0; i < (int)value.length(); i++) {
+    if (
+      !(value[i] >= '0' && value[i] <= '9') && 
+      !(value[i] == '-' && i == 0)
+    ) {
+      if (
+        value[i] == '.' && 
+        decimal == 0 && 
+        i != 0 && 
+        i != value.length() - 1 
+      ) {
+        decimal++;
+      } else {
+        throw UnknownInstructionException();
+      }
+    }
+  }
+  return ;
+}
+
+void VirtualMachine::_validateInt( std::string value ) const {
+  for (int i = 0; i < (int)value.length(); i++) {
+    if (
+      !(value[i] >= '0' && value[i] <= '9') && 
+      !(value[i] == '-' && i == 0)
+    ) {
+      throw UnknownInstructionException();
+    }
+  }
+  return ;
 }
 
 eOperandType VirtualMachine::_getType( std::string line ) const {
-  // for (int i = 0; i < line.length(); )
-  (void)line;
-  return Int8;
+  std::string type = "";
+
+  for (int i = 0; i < (int)line.length(); i++) {
+    if (line[i] == '(') {
+      break;
+    }
+    type += line[i];
+  }
+  this->_removeSubstring(line, type + "(");
+  if (type == "int8") {
+    return Int8;
+  } else if (type == "int16") {
+    return Int16;
+  } else if (type == "int32") {
+    return Int32;
+  } else if (type == "float") {
+    return Float;
+  } else if (type == "double") {
+    return Double;    
+  } else {
+    throw UnknownInstructionException();
+  }
+}
+
+std::string VirtualMachine::_getValue( std::string line ) const {
+  std::string value = "";
+
+  for (int i = 0; i < (int)line.length(); i++) {
+    if (line[i] == ')') {
+      break;
+    }
+    value += line[i];
+  }
+  this->_removeSubstring(line, value + ")");
+  return value;
 }
 
 void VirtualMachine::printCommands( void ) const {
