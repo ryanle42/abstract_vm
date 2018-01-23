@@ -1,4 +1,5 @@
 #include "VirtualMachine.hpp"
+
 VirtualMachine::VirtualMachine( void ) {
   return ;
 }
@@ -85,9 +86,9 @@ void VirtualMachine::_validateValue(
 ) const {
 
   if (type == Double || type == Float) {
-    _validateInt(value);
-  } else {
     _validateFloat(value);
+  } else {
+    _validateInt(value);
   }
   return ;
 }
@@ -177,7 +178,188 @@ void VirtualMachine::printCommands( void ) const {
   }
 }
 
-void VirtualMachine::_trimWhitespace( std::string & str ) {
+void VirtualMachine::executeCommands( void ) {
+  std::string cmd;
+
+  while (this->_cmds.size() > 0) {
+    cmd = std::get<0>(this->_cmds.front());
+    if (cmd == "pop") {
+      this->_pop();
+    } else if (cmd == "dump") {
+      this->_dump();
+    } else if (cmd == "add") {
+      this->_add();
+    } else if (cmd == "sub") {
+      this->_sub();
+    } else if (cmd == "mul") {
+      this->_mul();
+    } else if (cmd == "div") {
+      this->_div();
+    } else if (cmd == "mod") {
+      this->_mod();
+    } else if (cmd == "print") {
+      this->_print();
+    } else if (cmd == "exit") {
+      this->_exit();
+    } else if (cmd == "push") {
+      this->_push(std::get<1>(this->_cmds.front()));
+    } else if (cmd == "assert") {
+      this->_assert(std::get<1>(this->_cmds.front()));
+    }
+    this->_cmds.erase(this->_cmds.begin());
+  }
+}
+
+void  VirtualMachine::_print( void ) {
+  if (this->_stack.front()->getType() != Int8) {
+    throw FalseAssertException();
+  } else {
+    std::cout << ((Operand<int8_t>*)this->_stack.front())->getValue() 
+              << std::endl;
+  }
+  return ;
+}
+
+void  VirtualMachine::_exit( void ) {
+  if (this->_stack.size() != 2) {
+    throw EarlyExitException();
+  }
+  return ;
+}
+
+void  VirtualMachine::_push( IOperand const * operand ) {
+  this->_stack.push_back(operand);
+  return ;
+}
+
+void  VirtualMachine::_assert( IOperand const * operand ) {
+  if (
+    this->_stack.front()->toString() != operand->toString() || 
+    this->_stack.front()->getType() != operand->getType()
+  ) {
+    throw FalseAssertException();
+  }
+  return ;
+}
+
+void  VirtualMachine::_pop( void ) {
+  if (this->_stack.size() == 0) {
+    throw PopOnEmptyStackException();
+  } else {
+    this->_stack.erase(this->_stack.begin());
+  }
+  return ;
+}
+
+void  VirtualMachine::_dump( void ) {
+  for (int i = 1; i <= (int)this->_stack.size(); i++) {
+    std::cout << this->_stack[this->_stack.size() - i]->toString() 
+              << std::endl;
+  }
+  return ;
+}
+
+void  VirtualMachine::_add( void ) {
+  IOperand const * left;
+  IOperand const * right;
+  IOperand const * value;
+
+  if (this->_stack.size() < 2) {
+    throw InvalidStackSizeException();
+  } else {
+    left = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    value = *left + *right;
+    this->_stack.insert(this->_stack.begin(), value);
+    delete left;
+    delete right;
+  }
+  return ;
+}
+
+void  VirtualMachine::_sub( void ) {
+  IOperand const * left;
+  IOperand const * right;
+  IOperand const * value;
+
+  if (this->_stack.size() < 2) {
+    throw InvalidStackSizeException();
+  } else {
+    left = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    value = *left - *right;
+    this->_stack.insert(this->_stack.begin(), value);
+    delete left;
+    delete right;
+  }
+  return ;
+}
+
+void  VirtualMachine::_mul( void ) {
+  IOperand const * left;
+  IOperand const * right;
+  IOperand const * value;
+
+  if (this->_stack.size() < 2) {
+    throw InvalidStackSizeException();
+  } else {
+    left = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    value = *left * *right;
+    this->_stack.insert(this->_stack.begin(), value);
+    delete left;
+    delete right;
+  }
+  return ;
+}
+
+void  VirtualMachine::_div( void ) {
+  IOperand const * left;
+  IOperand const * right;
+  IOperand const * value;
+
+  if (this->_stack.size() < 2) {
+    throw InvalidStackSizeException();
+  } else {
+    left = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    value = *left / *right;
+    this->_stack.insert(this->_stack.begin(), value);
+    delete left;
+    delete right;
+  }
+  return ;
+}
+
+void  VirtualMachine::_mod( void ) {
+  IOperand const * left;
+  IOperand const * right;
+  IOperand const * value;
+
+  if (this->_stack.size() < 2) {
+    throw InvalidStackSizeException();
+  } else {
+    left = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+    value = *left % *right;
+    this->_stack.insert(this->_stack.begin(), value);
+    delete left;
+    delete right;
+  }
+  return ;
+}
+
+void  VirtualMachine::_trimWhitespace( std::string & str ) {
   while (str.length() > 0) {
     if (str.front() != ' ' && str.front() != '\t') {
       break;

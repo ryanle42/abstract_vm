@@ -3,6 +3,7 @@
 
 #include "IOperand.hpp"
 #include "Exceptions.hpp"
+#include <cstdint>
 
 template <class T>
 T convertOperand(IOperand const * operand);

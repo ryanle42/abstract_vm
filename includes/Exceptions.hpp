@@ -43,4 +43,45 @@ public:
   
 };
 
+class PopOnEmptyStackException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "Pop instruction on empty stack";
+  }
+  
+};
+
+class InvalidStackSizeException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "Operation on invalid stack size";
+  }
+  
+};
+
+class FalseAssertException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "False assertion";
+  }
+  
+};
+
+class EarlyExitException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "Exit called before other instructions";
+  }
+  
+};
+
+
 #endif

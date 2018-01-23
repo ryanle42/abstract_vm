@@ -18,10 +18,11 @@ public:
   VirtualMachine & operator=( VirtualMachine const & rhs );
   void addCommand( std::string line );
   void printCommands( void ) const;
+  void executeCommands( void );
 
 private:
 
-  std::vector<IOperand *> _stack;
+  std::vector<IOperand const *> _stack;
   std::vector<std::pair<std::string, IOperand const *>> _cmds;
   std::string _getCommand( std::string & line ) const;
   IOperand const * _getOperand( std::string line ) const;
@@ -32,7 +33,17 @@ private:
   void  _validateInt( std::string value ) const;
   void  _trimWhitespace( std::string & line );
   void  _removeSubstring( std::string & str, std::string const subStr ) const;
-
+  void  _pop( void );
+  void  _dump( void );
+  void  _add( void );
+  void  _sub( void );
+  void  _mul( void );
+  void  _div( void );
+  void  _mod( void );
+  void  _print( void );
+  void  _exit( void );
+  void  _push( IOperand const * operand );
+  void  _assert( IOperand const * operand );
 };
 
 #endif
