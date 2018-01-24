@@ -16,7 +16,7 @@ public:
   VirtualMachine( VirtualMachine const & src );
   ~VirtualMachine( void );
   VirtualMachine & operator=( VirtualMachine const & rhs );
-  void addCommand( std::string line );
+  void addCommand( std::string line, int const lineNb );
   void printCommands( void ) const;
   void executeCommands( void );
 
@@ -47,7 +47,7 @@ private:
   void  _mod( void );
   void  _print( void );
   void  _exit( void );
-  
+
 };
 
 #endif

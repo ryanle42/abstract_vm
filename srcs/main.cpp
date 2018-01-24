@@ -8,30 +8,22 @@ int main( int argc, char **argv ) {
   VirtualMachine vm;
   std::string line;
   std::ifstream file;
+  int lineNb = 1;
 
   if (argc == 1) {
     std::getline(std::cin, line);
     while (line != ";;") {
-      try {
-        vm.addCommand(line);
-      } catch (std::exception & e) {
-        std::cout << e.what() << std::endl;
-        return -1;
-      }
+      vm.addCommand(line, lineNb);
       std::getline(std::cin, line);
+      lineNb++;
     }
-    try {
-      vm.executeCommands();
-    } catch (std::exception & e) {
-      std::cout << e.what() << std::endl;
-      return -1;
-    }
-    return 0;
+    vm.executeCommands();
   } else if (argc == 2) {
       file.open(argv[1]);
       while(!file.eof()) {
-        getline(file, line);
-        vm.addCommand(line);
+        std::getline(file, line);
+        vm.addCommand(line, lineNb);
+        lineNb++;
       }
       file.close();
       vm.executeCommands();

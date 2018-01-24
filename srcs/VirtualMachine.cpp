@@ -32,20 +32,26 @@ VirtualMachine & VirtualMachine::operator=(
   return *this;
 }
 
-void VirtualMachine::addCommand( std::string line ) {
+void VirtualMachine::addCommand( 
+  std::string line, 
+  int const lineNb 
+) {
   IOperand const * operand;
   std::string cmd;
-  
-  if (line[0] == ';') {
-    return ;
-  }
-  this->_trimWhitespace(line);
-  cmd = this->_getCommand(line);
-  if (cmd == "push" || cmd == "assert") {
-    operand = this->_getOperand(line);
-    this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, operand));
-  } else {
-    this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, NULL));
+
+  try {
+    cmd = this->_getCommand(line);
+    if (cmd == "push" || cmd == "assert") {
+      operand = this->_getOperand(line);
+      this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, operand));
+    } else {
+      this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, NULL));
+    }
+  } catch (std::exception & e) {
+    this->_cmds.push_back(std::pair<std::string, IOperand const *>("", NULL));
+    std::cout << "Line " << lineNb 
+                  << " : Error : " << e.what() 
+                  << std::endl;
   }
   return ;
 }
@@ -54,6 +60,7 @@ std::string VirtualMachine::_getCommand( std::string & line ) const {
   std::string cmd = "";
 
   if (
+    line[0] == ';' ||
     line == "pop" || 
     line == "dump" || 
     line == "add" || 
@@ -188,34 +195,42 @@ void VirtualMachine::printCommands( void ) const {
 }
 
 void VirtualMachine::executeCommands( void ) {
+  int lineNb = 1;
   std::string cmd;
 
   while (this->_cmds.size() > 0) {
     cmd = std::get<0>(this->_cmds.front());
-    if (cmd == "pop") {
-      this->_pop();
-    } else if (cmd == "dump") {
-      this->_dump();
-    } else if (cmd == "add") {
-      this->_add();
-    } else if (cmd == "sub") {
-      this->_sub();
-    } else if (cmd == "mul") {
-      this->_mul();
-    } else if (cmd == "div") {
-      this->_div();
-    } else if (cmd == "mod") {
-      this->_mod();
-    } else if (cmd == "print") {
-      this->_print();
-    } else if (cmd == "exit") {
-      this->_exit();
-    } else if (cmd == "push") {
-      this->_push(std::get<1>(this->_cmds.front()));
-    } else if (cmd == "assert") {
-      this->_assert(std::get<1>(this->_cmds.front()));
+    try {
+      if (cmd == "pop") {
+        this->_pop();
+      } else if (cmd == "dump") {
+        this->_dump();
+      } else if (cmd == "add") {
+        this->_add();
+      } else if (cmd == "sub") {
+        this->_sub();
+      } else if (cmd == "mul") {
+        this->_mul();
+      } else if (cmd == "div") {
+        this->_div();
+      } else if (cmd == "mod") {
+        this->_mod();
+      } else if (cmd == "print") {
+        this->_print();
+      } else if (cmd == "exit") {
+        this->_exit();
+      } else if (cmd == "push") {
+        this->_push(std::get<1>(this->_cmds.front()));
+      } else if (cmd == "assert") {
+        this->_assert(std::get<1>(this->_cmds.front()));
+      }
+    } catch (std::exception & e) {
+      std::cout << "Line " << lineNb 
+                  << " : Error : " << e.what() 
+                  << std::endl;
     }
     this->_cmds.erase(this->_cmds.begin());
+    lineNb++;
   }
 }
 
