@@ -12,6 +12,15 @@ VirtualMachine::VirtualMachine( VirtualMachine const & src ) :
 }
 
 VirtualMachine::~VirtualMachine( void ) {
+  while (this->_stack.size() > 0) {
+    delete this->_stack.front();
+    this->_stack.erase(this->_stack.begin());
+  }
+  while (this->_cmds.size() > 0) {
+    delete std::get<1>(this->_cmds.front());
+    this->_cmds.erase(this->_cmds.begin());
+  }
+
   return ;
 }
 
@@ -374,7 +383,7 @@ void  VirtualMachine::_trimWhitespace( std::string & str ) {
   }
 }
 
-void VirtualMachine::_removeSubstring( 
+void  VirtualMachine::_removeSubstring( 
   std::string & str, 
   std::string const subStr 
 ) const {
