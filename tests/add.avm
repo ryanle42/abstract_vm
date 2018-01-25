@@ -1,0 +1,117 @@
+;---Add Int8---
+;
+push int8(10)
+push int8(18)
+add
+assert int8(28)
+pop
+push int8(10)
+push int8(-18)
+add
+assert int8(-8)
+pop
+push int8(-10)
+push int8(-18)
+add
+assert int8(-28)
+pop
+push int8(-10)
+push int8(18)
+add
+assert int8(8)
+pop
+;
+;---Add Int16---
+;
+push int16(102)
+push int16(183)
+add
+assert int16(285)
+pop
+push int16(310)
+push int16(-318)
+add
+assert int16(-8)
+pop
+push int16(-130)
+push int16(-183)
+add
+assert int16(-313)
+pop
+push int16(-140)
+push int16(148)
+add
+assert int16(8)
+pop
+;
+;---Add Int32---
+;
+push int32(4444)
+push int32(4444)
+add
+assert int32(8888)
+pop
+push int32(5555555)
+push int32(-318555)
+add
+assert int32(5237000)
+pop
+push int32(-1303)
+push int32(-1833)
+add
+assert int32(-3136)
+pop
+push int32(-140)
+push int32(148)
+add
+assert int32(8)
+pop
+;
+;---Add Float---
+;
+push float(4444)
+push float(4444)
+add
+assert float(8888)
+pop
+push float(5555555)
+push float(-318555)
+add
+assert float(5237000)
+pop
+push float(-1303)
+push float(-1833)
+add
+assert float(-3136)
+pop
+push float(-140)
+push float(148)
+add
+assert float(8)
+pop
+;
+;---Add Double---
+;
+push double(4444)
+push double(4444)
+add
+assert double(8888)
+pop
+push double(5555555)
+push double(-318555)
+add
+assert double(5237000)
+pop
+push double(-1303)
+push double(-1833)
+add
+assert double(-3136)
+pop
+push double(-140)
+push double(148)
+add
+assert double(8)
+pop
+;
+dump
+exit

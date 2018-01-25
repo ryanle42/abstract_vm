@@ -4,6 +4,8 @@
 #include "IOperand.hpp"
 #include "Exceptions.hpp"
 #include <cstdint>
+#include <cmath>
+#include <limits>
 
 template <class T>
 T convertOperand(IOperand const * operand);
@@ -209,6 +211,18 @@ IOperand * add(IOperand const & lhs, IOperand const & rhs) {
   T left = convertOperand<T>(&lhs);
   T right = convertOperand<T>(&rhs);
 
+  if (
+    std::numeric_limits<T>::is_signed
+    && std::numeric_limits<T>::is_integer
+  ) {
+    if (right > 0) {
+      if (std::numeric_limits<T>::max() - right < left)
+        throw OverflowException();
+    } else {
+      if (std::numeric_limits<T>::min() - right > left)
+        throw UnderflowException();
+    }
+  }
   return new Operand<T>(left + right);
 }
 
@@ -217,6 +231,18 @@ IOperand * sub(IOperand const & lhs, IOperand const & rhs) {
   T left = convertOperand<T>(&lhs);
   T right = convertOperand<T>(&rhs);
 
+  if (
+    std::numeric_limits<T>::is_signed
+    && std::numeric_limits<T>::is_integer
+  ) {
+    if (right > 0) {
+      if (std::numeric_limits<T>::min() + right > left) {
+        throw UnderflowException();
+      }
+    } else if (std::numeric_limits<T>::max() + right < left) {
+      throw OverflowException();
+    }
+  }
   return new Operand<T>(left - right);
 }
 
@@ -225,8 +251,56 @@ IOperand * mult(IOperand const & lhs, IOperand const & rhs) {
   T left = convertOperand<T>(&lhs);
   T right = convertOperand<T>(&rhs);
 
+  if (left != 0) {
+    if ((left > 0) == (right > 0)) {
+      if (std::numeric_limits<T>::max() / left < right) {
+        throw OverflowException();
+      }
+    } else {
+      if (left > 0) {
+        if (std::numeric_limits<T>::min() / left > right) {
+          throw UnderflowException();
+        }
+      } else {
+        if (std::numeric_limits<T>::min() / left < right) {
+          throw UnderflowException();
+        }
+      }
+    }
+  }
+  if (
+    (left == -1 && right == std::numeric_limits<T>::min()) || 
+    (right == -1 && left == std::numeric_limits<T>::min())
+  ) {
+    throw OverflowException();
+  }
   return new Operand<T>(left * right);
 }
+
+template <>
+inline IOperand *mult<float>(IOperand const &lhs, IOperand const &rhs) {
+    float left = convertOperand<float>(&lhs);
+    float right = convertOperand<float>(&rhs);
+    float result = left * right;
+
+    if (std::isinf(result)) {
+      throw OverflowException();
+    }
+    return new Operand<float>(result);
+}
+
+template <>
+inline IOperand *mult<double>(IOperand const &lhs, IOperand const &rhs) {
+    double left = convertOperand<double>(&lhs);
+    double right = convertOperand<double>(&rhs);
+    double result = left * right;
+
+    if (std::isinf(result)) {
+      throw OverflowException();
+    }
+    return new Operand<double>(result);
+}
+
 
 template <class T>
 IOperand * divide(IOperand const & lhs, IOperand const & rhs) {
@@ -235,6 +309,9 @@ IOperand * divide(IOperand const & lhs, IOperand const & rhs) {
 
   if (right == 0) {
     throw DivideByZeroException();
+  }
+  if (right == -1 && left == std::numeric_limits<T>::min()) {
+    throw OverflowException();
   }
   return new Operand<T>(left / right);
 }
@@ -247,7 +324,7 @@ IOperand * mod(IOperand const & lhs, IOperand const & rhs) {
   if (right == 0) {
     throw DivideByZeroException();
   }
-  return new Operand<T>(fmod(left,right));
+  return new Operand<T>(fmod(left, right));
 }
 
 #endif

@@ -13,6 +13,16 @@ public:
 
 };
 
+class UnderflowException : public std::exception {
+
+public:
+
+  virtual const char * what() const throw() {
+    return "Underflow on a value or operation";
+  }
+
+};
+
 class InvalidIOperandException : public std::exception {
 
 public:
@@ -73,15 +83,16 @@ public:
   
 };
 
-class EarlyExitException : public std::exception {
+class NoExitCommandException : public std::exception {
 
 public:
 
   virtual const char * what() const throw() {
-    return "Exit called before other instructions";
+    return "No exit instruction";
   }
   
 };
+
 
 
 #endif

@@ -1,12 +1,15 @@
 #include "VirtualMachine.hpp"
 
-VirtualMachine::VirtualMachine( void ) {
+VirtualMachine::VirtualMachine( void ) : 
+  _exitCommand(false)
+{
   return ;
 }
 
 VirtualMachine::VirtualMachine( VirtualMachine const & src ) :
   _stack(src._stack),
-  _cmds(src._cmds)
+  _cmds(src._cmds),
+  _exitCommand(src._exitCommand)
 {
   return ;
 }
@@ -29,6 +32,7 @@ VirtualMachine & VirtualMachine::operator=(
 ) {
   this->_stack = rhs._stack;
   this->_cmds = rhs._cmds;
+  this->_exitCommand = rhs._exitCommand;
   return *this;
 }
 
@@ -41,6 +45,9 @@ void VirtualMachine::addCommand(
 
   try {
     cmd = this->_getCommand(line);
+    if (cmd == "exit") {
+      this->_exitCommand = true;
+    }
     if (cmd == "push" || cmd == "assert") {
       operand = this->_getOperand(line);
       this->_cmds.push_back(std::pair<std::string, IOperand const *>(cmd, operand));
@@ -59,8 +66,10 @@ void VirtualMachine::addCommand(
 std::string VirtualMachine::_getCommand( std::string & line ) const {
   std::string cmd = "";
 
+  if (line[0] == ';') {
+    return "";
+  }
   if (
-    line[0] == ';' ||
     line == "pop" || 
     line == "dump" || 
     line == "add" || 
@@ -178,7 +187,10 @@ std::string VirtualMachine::_getValue( std::string line ) const {
     }
     value += line[i];
   }
-  this->_removeSubstring(line, value + ")");
+  this->_removeSubstring(line, value);
+  if (line[0] != ')' || line.length() != 1) {
+    throw UnknownInstructionException();
+  }
   return value;
 }
 
@@ -198,6 +210,9 @@ void VirtualMachine::executeCommands( void ) {
   int lineNb = 1;
   std::string cmd;
 
+  if (!this->_exitCommand) {
+    throw NoExitCommandException();
+  }
   while (this->_cmds.size() > 0) {
     cmd = std::get<0>(this->_cmds.front());
     try {
@@ -218,7 +233,8 @@ void VirtualMachine::executeCommands( void ) {
       } else if (cmd == "print") {
         this->_print();
       } else if (cmd == "exit") {
-        this->_exit();
+        this->_exitCommand = false;
+        return ;
       } else if (cmd == "push") {
         this->_push(std::get<1>(this->_cmds.front()));
       } else if (cmd == "assert") {
@@ -240,13 +256,6 @@ void  VirtualMachine::_print( void ) {
   } else {
     std::cout << ((Operand<int8_t>*)this->_stack.front())->getValue() 
               << std::endl;
-  }
-  return ;
-}
-
-void  VirtualMachine::_exit( void ) {
-  if (this->_stack.size() != 2) {
-    throw EarlyExitException();
   }
   return ;
 }
@@ -355,7 +364,7 @@ void  VirtualMachine::_div( void ) {
     this->_stack.erase(this->_stack.begin());
     right = this->_stack.front();
     this->_stack.erase(this->_stack.begin());
-    value = *left / *right;
+    value = (*left / *right);
     this->_stack.insert(this->_stack.begin(), value);
     delete left;
     delete right;

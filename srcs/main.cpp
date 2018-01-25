@@ -17,7 +17,12 @@ int main( int argc, char **argv ) {
       std::getline(std::cin, line);
       lineNb++;
     }
-    vm.executeCommands();
+    try {
+      vm.executeCommands();
+    } catch (std::exception & e) {
+      std::cout << "Error : " << e.what()
+                << std::endl;
+    }
   } else if (argc == 2) {
       file.open(argv[1]);
       while(!file.eof()) {
@@ -26,6 +31,11 @@ int main( int argc, char **argv ) {
         lineNb++;
       }
       file.close();
-      vm.executeCommands();
+      try {
+        vm.executeCommands();
+      } catch (std::exception & e) {
+        std::cout << "Error : " << e.what()
+                  << std::endl;
+      }
   }
 }

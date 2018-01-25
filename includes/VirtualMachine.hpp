@@ -24,6 +24,7 @@ private:
 
   std::vector<IOperand const *> _stack;
   std::vector<std::pair<std::string, IOperand const *>> _cmds;
+  bool _exitCommand;
   std::string _getCommand( std::string & line ) const;
   IOperand const * _getOperand( std::string line ) const;
   eOperandType  _getType( std::string & line ) const;
@@ -46,8 +47,6 @@ private:
   void  _div( void );
   void  _mod( void );
   void  _print( void );
-  void  _exit( void );
-
 };
 
 #endif
