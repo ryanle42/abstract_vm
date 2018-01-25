@@ -251,10 +251,10 @@ void VirtualMachine::executeCommands( void ) {
 }
 
 void  VirtualMachine::_print( void ) {
-  if (this->_stack.front()->getType() != Int8) {
+  if (this->_stack.back()->getType() != Int8) {
     throw FalseAssertException();
   } else {
-    std::cout << ((Operand<int8_t>*)this->_stack.front())->getValue() 
+    std::cout << ((Operand<int8_t>*)this->_stack.back())->getValue() 
               << std::endl;
   }
   return ;
@@ -267,8 +267,8 @@ void  VirtualMachine::_push( IOperand const * operand ) {
 
 void  VirtualMachine::_assert( IOperand const * operand ) {
   if (
-    this->_stack.front()->toString() != operand->toString() || 
-    this->_stack.front()->getType() != operand->getType()
+    this->_stack.back()->toString() != operand->toString() || 
+    this->_stack.back()->getType() != operand->getType()
   ) {
     throw FalseAssertException();
   }
@@ -279,14 +279,17 @@ void  VirtualMachine::_pop( void ) {
   if (this->_stack.size() == 0) {
     throw PopOnEmptyStackException();
   } else {
-    this->_stack.erase(this->_stack.begin());
+    delete this->_stack.back();
+    this->_stack.pop_back();
   }
   return ;
 }
 
 void  VirtualMachine::_dump( void ) {
-  for (int i = 1; i <= (int)this->_stack.size(); i++) {
-    std::cout << this->_stack[this->_stack.size() - i]->toString() 
+  int stackSize = (int)this->_stack.size();
+
+  for (int i = 1; i <= stackSize; i++) {
+    std::cout << this->_stack[stackSize - i]->toString() 
               << std::endl;
   }
   return ;
@@ -300,12 +303,12 @@ void  VirtualMachine::_add( void ) {
   if (this->_stack.size() < 2) {
     throw InvalidStackSizeException();
   } else {
-    left = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
-    right = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.back();
+    this->_stack.pop_back();
+    left = this->_stack.back();
+    this->_stack.pop_back();
     value = *left + *right;
-    this->_stack.insert(this->_stack.begin(), value);
+    this->_stack.push_back(value);
     delete left;
     delete right;
   }
@@ -320,12 +323,12 @@ void  VirtualMachine::_sub( void ) {
   if (this->_stack.size() < 2) {
     throw InvalidStackSizeException();
   } else {
-    left = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
-    right = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.back();
+    this->_stack.pop_back();
+    left = this->_stack.back();
+    this->_stack.pop_back();
     value = *left - *right;
-    this->_stack.insert(this->_stack.begin(), value);
+    this->_stack.push_back(value);
     delete left;
     delete right;
   }
@@ -340,12 +343,12 @@ void  VirtualMachine::_mul( void ) {
   if (this->_stack.size() < 2) {
     throw InvalidStackSizeException();
   } else {
-    left = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
-    right = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.back();
+    this->_stack.pop_back();
+    left = this->_stack.back();
+    this->_stack.pop_back();
     value = *left * *right;
-    this->_stack.insert(this->_stack.begin(), value);
+    this->_stack.push_back(value);
     delete left;
     delete right;
   }
@@ -360,12 +363,12 @@ void  VirtualMachine::_div( void ) {
   if (this->_stack.size() < 2) {
     throw InvalidStackSizeException();
   } else {
-    left = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
-    right = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.back();
+    this->_stack.pop_back();
+    left = this->_stack.back();
+    this->_stack.pop_back();
     value = (*left / *right);
-    this->_stack.insert(this->_stack.begin(), value);
+    this->_stack.push_back(value);
     delete left;
     delete right;
   }
@@ -380,12 +383,12 @@ void  VirtualMachine::_mod( void ) {
   if (this->_stack.size() < 2) {
     throw InvalidStackSizeException();
   } else {
-    left = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
-    right = this->_stack.front();
-    this->_stack.erase(this->_stack.begin());
+    right = this->_stack.back();
+    this->_stack.pop_back();
+    left = this->_stack.back();
+    this->_stack.pop_back();
     value = *left % *right;
-    this->_stack.insert(this->_stack.begin(), value);
+    this->_stack.push_back(value);
     delete left;
     delete right;
   }

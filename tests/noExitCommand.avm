@@ -1,0 +1,6 @@
+; No exit command
+push int(12)
+push int(433)
+pop
+pop
+dump

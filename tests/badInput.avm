@@ -1,0 +1,26 @@
+; Bad instructions
+aasdf ()
+push few()
+push int8(34
+push int16)(43)
+assert
+assert (433)
+assert int8float(43)
+push floatint8int16(())
+push float(.34)
+push float(34.)
+push int8(--34)
+push int8(+34)
+push int8(34-)
+push int8(3-4)
+push int8(3+4)
+push int8(34+)
+push int8(-34-)
+push int8(-0.34)
+push int8(0.34)
+push int8(.34)
+exitt
+exxitpush
+pushexit
+push exit
+exit

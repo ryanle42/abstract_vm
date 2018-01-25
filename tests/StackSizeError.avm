@@ -1,0 +1,13 @@
+;
+; Stack size error
+;
+pop
+push int8(23)
+add
+sub
+mul
+div
+;;;;
+;;
+;
+exit

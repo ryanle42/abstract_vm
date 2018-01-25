@@ -251,6 +251,12 @@ IOperand * mult(IOperand const & lhs, IOperand const & rhs) {
   T left = convertOperand<T>(&lhs);
   T right = convertOperand<T>(&rhs);
 
+  if (
+    (left == -1 && right == std::numeric_limits<T>::min()) || 
+    (right == -1 && left == std::numeric_limits<T>::min())
+  ) {
+    throw OverflowException();
+  }
   if (left != 0) {
     if ((left > 0) && (right > 0)) {
       if (std::numeric_limits<T>::max() / left < right) {
@@ -267,12 +273,6 @@ IOperand * mult(IOperand const & lhs, IOperand const & rhs) {
         }
       }
     }
-  }
-  if (
-    (left == -1 && right == std::numeric_limits<T>::min()) || 
-    (right == -1 && left == std::numeric_limits<T>::min())
-  ) {
-    throw OverflowException();
   }
   return new Operand<T>(left * right);
 }
