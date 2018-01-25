@@ -1,0 +1,167 @@
+;---Mul Int8_t---
+;
+push int8(12)
+push int8(6)
+mul
+assert int8(72)
+pop
+push int8(-12)
+push int8(6)
+mul
+assert int8(-72)
+pop
+push int8(-12)
+push int8(-6)
+mul
+assert int8(72)
+pop
+push int8(12)
+push int8(1)
+mul
+assert int8(12)
+pop
+push int8(0)
+push int8(12)
+mul
+assert int8(0)
+pop
+push int8(12)
+push int8(0)
+mul
+assert int8(0)
+pop
+;
+;---Mul Int16_t---
+;
+push int16(12)
+push int16(6)
+mul
+assert int16(72)
+pop
+push int16(-12)
+push int16(6)
+mul
+assert int16(-72)
+pop
+push int16(-12)
+push int16(-6)
+mul
+assert int16(72)
+pop
+push int16(12)
+push int16(1)
+mul
+assert int16(12)
+pop
+push int16(0)
+push int16(12)
+mul
+assert int16(0)
+pop
+push int16(12)
+push int16(0)
+mul
+assert int16(0)
+pop
+;
+;---Mul Int32_t---
+;
+push int32(12)
+push int32(6)
+mul
+assert int32(72)
+pop
+push int32(-12)
+push int32(6)
+mul
+assert int32(-72)
+pop
+push int32(-12)
+push int32(-6)
+mul
+assert int32(72)
+pop
+push int32(12)
+push int32(1)
+mul
+assert int32(12)
+pop
+push int32(0)
+push int32(12)
+mul
+assert int32(0)
+pop
+push int32(12)
+push int32(0)
+mul
+assert int32(0)
+pop
+;
+;---Mul Float---
+;
+push float(12)
+push float(6)
+mul
+assert float(72)
+pop
+push float(-12)
+push float(6)
+mul
+assert float(-72)
+pop
+push float(-12)
+push float(-6)
+mul
+assert float(72)
+pop
+push float(12)
+push float(1)
+mul
+assert float(12)
+pop
+push float(0)
+push float(12)
+mul
+assert float(0)
+pop
+push float(12)
+push float(0)
+mul
+assert float(0)
+pop
+;
+;---Mul Double---
+;
+push double(12)
+push double(6)
+mul
+assert double(72)
+pop
+push double(-12)
+push double(6)
+mul
+assert double(-72)
+pop
+push double(-12)
+push double(-6)
+mul
+assert double(72)
+pop
+push double(12)
+push double(1)
+mul
+assert double(12)
+pop
+push double(0)
+push double(12)
+mul
+assert double(0)
+pop
+push double(12)
+push double(0)
+mul
+assert double(0)
+pop
+;
+dump
+exit

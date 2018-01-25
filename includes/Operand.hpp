@@ -252,7 +252,7 @@ IOperand * mult(IOperand const & lhs, IOperand const & rhs) {
   T right = convertOperand<T>(&rhs);
 
   if (left != 0) {
-    if ((left > 0) == (right > 0)) {
+    if ((left > 0) && (right > 0)) {
       if (std::numeric_limits<T>::max() / left < right) {
         throw OverflowException();
       }
