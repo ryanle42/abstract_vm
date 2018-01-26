@@ -395,21 +395,6 @@ void  VirtualMachine::_mod( void ) {
   return ;
 }
 
-void  VirtualMachine::_trimWhitespace( std::string & str ) {
-  while (str.length() > 0) {
-    if (str.front() != ' ' && str.front() != '\t') {
-      break;
-    }
-    str.erase(str.begin());
-  }
-  while (str.length() > 0) {
-    if (str.back() != ' ' && str.back() != '\t') {
-      break;
-    }
-    str.erase(str.end() - 1);
-  }
-}
-
 void  VirtualMachine::_removeSubstring( 
   std::string & str, 
   std::string const subStr 

@@ -29,10 +29,12 @@ private:
   IOperand const * _getOperand( std::string line ) const;
   eOperandType  _getType( std::string & line ) const;
   std::string _getValue( std::string line ) const;
-  void  _validateValue( eOperandType type, std::string value ) const;
+  void  _validateValue( 
+    eOperandType type, 
+    std::string value 
+  ) const;
   void  _validateFloat( std::string value ) const;
   void  _validateInt( std::string value ) const;
-  void  _trimWhitespace( std::string & line );
   void  _removeSubstring( 
     std::string & str, 
     std::string const subStr 

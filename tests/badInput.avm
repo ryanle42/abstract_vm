@@ -3,6 +3,9 @@ aasdf ()
 push few()
 push int8(34
 push int16)(43)
+push  int8(12)
+push int8(23) 
+ push int8(32)
 assert
 assert (433)
 assert int8float(43)
@@ -23,4 +26,5 @@ exitt
 exxitpush
 pushexit
 push exit
+dump
 exit
