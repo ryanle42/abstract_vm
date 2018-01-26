@@ -1,4 +1,4 @@
-NAME = a_vm
+NAME = avm
 
 OBJS = $(addprefix ./srcs/, \
 					$(addsuffix .o, \
@@ -18,7 +18,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CX) $(CXFLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
-	@echo "a_vm made"
+	@echo "avm made"
 
 %.o: %.cpp
 	$(CX) $(CXFLAGS) $(INCLUDES) -c -o $@ $<
