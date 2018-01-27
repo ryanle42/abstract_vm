@@ -69,18 +69,8 @@ std::string VirtualMachine::_getCommand( std::string & line ) const {
   if (line[0] == ';') {
     return "";
   }
-  if (
-    line == "pop" || 
-    line == "dump" || 
-    line == "add" || 
-    line == "sub" || 
-    line == "mul" || 
-    line == "div" || 
-    line == "mod" || 
-    line == "print" || 
-    line == "exit"
-  ) {
-    return line;
+  if ("" != (cmd = _getShortCommand(line))) {
+    return cmd;
   }
   for (int i = 0; i < (int)line.length() && line[i] != ' '; i++) {
     cmd += line[i];
@@ -92,6 +82,35 @@ std::string VirtualMachine::_getCommand( std::string & line ) const {
     return cmd;
   } else {
     throw UnknownInstructionException();
+  }
+}
+
+std::string VirtualMachine::_getShortCommand( 
+  std::string & line 
+) const {
+  std::string cmd = "";
+  for (int i = 0; i < (int)line.length(); i++) {
+    if (line[i] == ' ' || line[i] == ';') {
+      break;
+    }
+    cmd += line[i];
+  }
+  if (
+    cmd == "pop" || 
+    cmd == "dump" || 
+    cmd == "add" || 
+    cmd == "sub" || 
+    cmd == "mul" || 
+    cmd == "div" || 
+    cmd == "mod" || 
+    cmd == "print" || 
+    cmd == "exit"
+  ) {
+    this->_removeSubstring(line, cmd);
+    this->_checkForEndlineComment(line);
+    return cmd;
+  } else {
+    return "";
   }
 }
 
@@ -188,10 +207,25 @@ std::string VirtualMachine::_getValue( std::string line ) const {
     value += line[i];
   }
   this->_removeSubstring(line, value);
-  if (line[0] != ')' || line.length() != 1) {
+  if (line[0] != ')') {
     throw UnknownInstructionException();
   }
+  this->_removeSubstring(line, ")");
+  // this->_checkForEndlineComment(line);
+
   return value;
+}
+
+void VirtualMachine::_checkForEndlineComment( 
+  std::string line 
+) const {
+  while (line.length() > 0 && line.front() == ' ') {
+    line.erase(line.begin());
+  }
+  if (line.length() > 0 && line.front() != ';') {
+    throw UnknownInstructionException();
+  }
+  return ;
 }
 
 void VirtualMachine::printCommands( void ) const {
@@ -251,11 +285,13 @@ void VirtualMachine::executeCommands( void ) {
 }
 
 void  VirtualMachine::_print( void ) {
-  if (this->_stack.back()->getType() != Int8) {
-    throw FalseAssertException();
-  } else {
-    std::cout << ((Operand<int8_t>*)this->_stack.back())->getValue() 
-              << std::endl;
+  if (this->_stack.size() > 0) {
+    if (this->_stack.back()->getType() != Int8) {
+      throw FalseAssertException();
+    } else {
+      std::cout << ((Operand<int8_t>*)this->_stack.back())->getValue() 
+                << std::endl;
+    }
   }
   return ;
 }

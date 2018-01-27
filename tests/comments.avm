@@ -1,0 +1,15 @@
+;this is a comment
+;;thisisacomment
+;;;;;;;;;
+; ; ; ; ;;;
+push int8(21) ;comment
+push int8(21);alsocomment
+push int8(21)     ;anothercomment
+push int8(21) ;sssscomment
+dump;
+;;dump
+add;;
+add ; ; ;
+;;
+; ;
+exit

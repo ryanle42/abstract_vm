@@ -26,6 +26,7 @@ private:
   std::vector<std::pair<std::string, IOperand const *>> _cmds;
   bool _exitCommand;
   std::string _getCommand( std::string & line ) const;
+  std::string _getShortCommand( std::string & line ) const;
   IOperand const * _getOperand( std::string line ) const;
   eOperandType  _getType( std::string & line ) const;
   std::string _getValue( std::string line ) const;
@@ -33,6 +34,7 @@ private:
     eOperandType type, 
     std::string value 
   ) const;
+  void  _checkForEndlineComment( std::string line ) const;
   void  _validateFloat( std::string value ) const;
   void  _validateInt( std::string value ) const;
   void  _removeSubstring( 
